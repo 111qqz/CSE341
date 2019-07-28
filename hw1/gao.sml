@@ -1,7 +1,16 @@
 fun is_older(date_lhs:int*int*int,date_rhs:int*int*int ) =
-    if #1 date_lhs < #1 date_rhs then true else 
-    if #2 date_lhs < #2 date_rhs then true else 
-    if #3 date_lhs < #3 date_rhs then true else false 
+    let val year1 = #1 date_lhs 
+        val month1 = #2 date_lhs
+        val day1 = #3 date_lhs
+        val year2 = #1 date_rhs 
+        val month2 = #2 date_rhs
+        val day2 = #3 date_rhs 
+    in 
+        if year1 < year2 then true 
+        else if year1 = year2 andalso month1 < month2 then true 
+        else if year1 = year2 andalso month1 = month2 andalso day1<day2 then true 
+        else false 
+    end 
 
 
 fun number_in_month(date_lst:(int*int*int) list, month:int) = 
@@ -66,16 +75,19 @@ fun month_range(day1:int, day2:int) =
     then []
     else what_month(day1)::month_range(day1+1,day2)
 
-(* fun oldest(date_lst:(int*int*int) list) = 
+fun oldest(date_lst:(int*int*int) list) = 
     if null date_lst
     then NONE
     else 
-        let ret = oldest(tl date_lst)
+        let val ret = oldest(tl date_lst)
         in 
-            if 
+            if isSome ret andalso is_older(valOf ret,hd date_lst)
+            then ret 
+            else SOME (hd date_lst)
+        end 
 
+fun number_in_months_challenge
 
- *)
 
 
 

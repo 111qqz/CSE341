@@ -6,3 +6,7 @@ val test3 = number_in_months ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],
 
 
 val test8 = number_before_reaching_sum (9, [1,2,3,4,5]) = 3
+
+
+val test1 = is_older((2011,4,28),(2011,3,31));
+val test11 = oldest([(2012,2,28),(2011,3,31),(2011,4,28)]) ;

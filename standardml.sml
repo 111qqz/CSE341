@@ -22,7 +22,7 @@ val tau = 2.0 * pi         (* You can multiply two reals *)
 val twice_rent = 2 * rent  (* You can multiply two ints *)
 (* val meh = 1.25 * 10 *)  (* But you can't multiply an int and a real *)
 val yeh = 1.25 * (Real.fromInt 10) (* ...unless you explicitly convert
-                                      one or the other *)
+                        is_older              one or the other *)
 
 (* +, - and * are overloaded so they work for both int and real. *)
 (* The same cannot be said for division which has separate operators: *)
@@ -450,3 +450,18 @@ fun decrement_to_zero r = if !r < 0
 
 (* To allow returning a value, we can use the semicolon to sequence evaluations *)
 fun decrement_ret x y = (x := !x - 1; y)
+
+
+
+(* use of option *)
+
+fun oldest(date_lst:(int*int*int) list) = 
+    if null date_lst
+    then NONE
+    else 
+        let val ret = oldest(tl date_lst)
+        in 
+            if isSome ret andalso is_older(valOf ret,hd date_lst)
+            then ret 
+            else SOME (hd date_lst)
+        end 
