@@ -86,7 +86,6 @@ fun oldest(date_lst:(int*int*int) list) =
             else SOME (hd date_lst)
         end 
 
-fun number_in_months_challenge
 
 
 
