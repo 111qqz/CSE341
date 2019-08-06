@@ -97,10 +97,10 @@ fun remove_card(cs,c,e) =
         if ret = cs then raise e  else ret 
     end
 
-
+(* empty list has all the color ... *)
 fun all_same_color(card_lst) =
     case card_lst of 
-        [] => false 
+        [] => true 
     |   _::[] => true 
     |   head::(neck::rest) 
         => (card_color(head) = card_color(neck)) andalso all_same_color(neck::rest) 
