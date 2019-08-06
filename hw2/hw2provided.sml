@@ -56,25 +56,52 @@ let
         |   x'::xs' => {first=x',middle=y,last=z}::helper(xs')
 in 
     {first=x,middle=y,last=z}::helper(ret)
-    (* [{first=x,middle=y,last=z}] *)
 end 
-
-
-
-
-
-
 
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
-(* datatype suit = Clubs | Diamonds | Hearts | Spades
+datatype suit = Clubs | Diamonds | Hearts | Spades
 datatype rank = Jack | Queen | King | Ace | Num of int 
 type card = suit * rank
 
 datatype color = Red | Black
 datatype move = Discard of card | Draw 
 
-exception IllegalMove *)
+exception IllegalMove 
 
 (* put your solutions for problem 2 here *)
+
+
+fun card_color(in_suit,in_rank) = 
+    case in_suit of
+        Clubs => Black 
+    |   Spades => Black 
+    |     _  => Red 
+
+
+fun card_value(in_suit,in_rank) = 
+    case in_rank of 
+        Ace => 11
+    |   Num x => x 
+    |   _     => 10
+
+
+fun remove_card(cs,c,e) = 
+    let fun helper(acc,flag) = 
+        case acc of 
+            [] => []
+        |   x::xs' => if flag andalso x=c then helper(xs',false) else x::helper(xs',flag)
+        val ret = helper(cs,true)
+    in 
+        if ret = cs then raise e  else ret 
+    end
+
+
+fun all_same_color(card_lst) =
+    case card_lst of 
+        [] => false 
+    |   _::[] => true 
+    |   (headSuit,headRank)::((neckSuit,neckRank)::rest) 
+        => (headSuit = neckSuit andalso all_same_color((neckSuit,neckRank)::rest) )
+
