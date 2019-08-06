@@ -102,6 +102,49 @@ fun all_same_color(card_lst) =
     case card_lst of 
         [] => false 
     |   _::[] => true 
-    |   (headSuit,headRank)::((neckSuit,neckRank)::rest) 
-        => (headSuit = neckSuit andalso all_same_color((neckSuit,neckRank)::rest) )
+    |   head::(neck::rest) 
+        => (card_color(head) = card_color(neck)) andalso all_same_color(neck::rest) 
 
+fun sum_cards(card_lst) = 
+    let fun helper(card_lst,sum) = 
+            case card_lst of 
+                [] => sum 
+            |   head::rest => helper(rest,sum + card_value head ) 
+    in 
+        helper(card_lst,0)
+    end 
+
+fun score(card_lst,goal) = 
+    let 
+        val sum = sum_cards(card_lst)
+        val same_color = all_same_color(card_lst)
+        val p_score = if sum > goal then 3*(sum-goal) else goal-sum;
+        val ret = if same_color then p_score div 2 else p_score 
+    in 
+        ret 
+    end 
+
+
+(* the order in held_lst  is not important *)
+fun officiate(card_lst,move_lst,goal) = 
+    let 
+        fun helper(held_lst, mov_lst, card_lst) = 
+            case mov_lst of 
+                [] => score(held_lst,goal)
+            |   (Discard c)::rest_mov_lst => helper(remove_card(held_lst,c,IllegalMove),rest_mov_lst,card_lst)
+            |   Draw::rest_mov_lst =>   
+                case card_lst of
+                    [] => score(held_lst,goal)
+                | card::rest_card_lst => 
+                    let 
+                        val nxt_held_lst = card::held_lst 
+                    in 
+                        if sum_cards(nxt_held_lst) > goal 
+                        then score(nxt_held_lst,goal)
+                        else helper(nxt_held_lst,rest_mov_lst,rest_card_lst)
+                    end 
+    in 
+        helper([],move_lst,card_lst)
+    end 
+
+        
