@@ -68,16 +68,63 @@ fun first_answer f lst =
 				 in  
 					if isSome ret then valOf ret else first_answer f xs 
 				 end 
+
 fun all_answers f lst =
 	let fun helper lst acc = 
 		case lst of 
-			[] => acc 
-		|   x::xs => 
-				 let 
-					val ret = f(x)
-				 in  
-					if isSome ret then (helper xs acc @ ret) else helper xs acc 
-				 end
+			[] => SOME acc 
+		|   SOME(x)::xs => helper xs (acc @ x)
+        |   NONE::xs  => NONE 
 	in 
-		if null lst then SOME [] else helper lst []
+		if null lst then SOME [] 
+        else 
+            helper (map f lst)  []
 	end  
+
+val count_wildcards =  g (fn () => 1)  (fn (x) => 0 )
+
+val count_wild_and_variable_lengths = g (fn () => 1) String.size
+
+fun count_some_var (st,p) = 
+    g (fn() => 0) (fn(x) => if x=st then 1 else 0) p
+
+
+fun check_pat p = 
+    let 
+        fun get_all_sts p = 
+            case p of
+              Variable x        => [x]
+            | TupleP ps         => List.foldl (fn (p,i) => (get_all_sts p) @ i) [] ps
+            | ConstructorP(_,p) => get_all_sts p
+            | _                 => []
+        fun has_repeats st_lst =
+            case st_lst of
+                [] => false 
+            |   x::xs => List.exists(fn y => y=x ) xs orelse  has_repeats xs  
+    in 
+        (not o has_repeats o get_all_sts) p 
+    end
+
+fun match (v,p) = 
+    case (p,v) of 
+        (Wildcard,_) =>  SOME []
+    |   (Variable s,_) => SOME [(s,v)]
+    |   (UnitP,Unit) => SOME []
+    |   (ConstP x,Const y) => if x=y then SOME [] else NONE 
+    |   (TupleP ps,Tuple vs) => if List.length ps = List.length vs 
+                                then all_answers(fn (vs',ps')=>match(vs',ps')) (ListPair.zip(vs,ps))
+                                else NONE 
+    |   (ConstructorP(s1,p),Constructor(s2,v)) => if s1 = s2 then match(v,p) else NONE 
+    |   _ => NONE
+
+
+                        
+fun first_match v ps = 
+    ( SOME(first_answer (fn p => match(v,p)) ps) ) handle NoAnswer => NONE
+
+
+
+
+
+
+
