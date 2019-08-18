@@ -53,11 +53,11 @@ fun longest_string_helper f st_lst   =
 val  longest_string3 = longest_string_helper (fn (x,y) => x>y)
 val  longest_string4 = longest_string_helper (fn (x,y) => x>=y)
 
-fun longest_capitalized(st_lst) = 
-	(longest_string1 o only_capitals)  st_lst
+fun longest_capitalized  = 
+	longest_string1 o only_capitals
 
-fun rev_string(st) = 
-	(String.implode o List.rev o String.explode) st
+fun rev_string  = 
+	String.implode o List.rev o String.explode 
 
 
 fun first_answer f lst = 
