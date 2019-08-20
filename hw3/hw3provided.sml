@@ -53,11 +53,9 @@ fun longest_string_helper f st_lst   =
 val  longest_string3 = longest_string_helper (fn (x,y) => x>y)
 val  longest_string4 = longest_string_helper (fn (x,y) => x>=y)
 
-fun longest_capitalized  = 
-	longest_string1 o only_capitals
+val longest_capitalized  =  longest_string1 o only_capitals
 
-fun rev_string  = 
-	String.implode o List.rev o String.explode 
+val rev_string  =  String.implode o List.rev o String.explode 
 
 
 fun first_answer f lst = 
@@ -76,12 +74,12 @@ fun all_answers f lst =
 		|   SOME(x)::xs => helper xs (acc @ x)
         |   NONE::xs  => NONE 
 	in 
-		if null lst then SOME [] 
-        else 
-            helper (map f lst)  []
+        helper (map f lst)  []
 	end  
 
-val count_wildcards =  g (fn () => 1)  (fn (x) => 0 )
+(* val test8a = all_answers  (only_capitals) ["this","list","has"] *)
+
+val count_wildcards =  g (fn () => 1)  (fn _ => 0 )
 
 val count_wild_and_variable_lengths = g (fn () => 1) String.size
 
@@ -112,7 +110,7 @@ fun match (v,p) =
     |   (UnitP,Unit) => SOME []
     |   (ConstP x,Const y) => if x=y then SOME [] else NONE 
     |   (TupleP ps,Tuple vs) => if List.length ps = List.length vs 
-                                then all_answers(fn (vs',ps')=>match(vs',ps')) (ListPair.zip(vs,ps))
+                                then all_answers match (ListPair.zip(vs,ps))
                                 else NONE 
     |   (ConstructorP(s1,p),Constructor(s2,v)) => if s1 = s2 then match(v,p) else NONE 
     |   _ => NONE
