@@ -53,7 +53,13 @@
   (let ([pr (stream)])
     (lambda() (cons (cons 0 (car pr)) (stream-add-zero (cdr pr))))))
 
+(define (cycle-lists xs ys)
+  (letrec ([f (lambda (n) (cons (cons (list-nth-mod xs n) (list-nth-mod ys n) )
+                                      (lambda () (f (+ n 1)))))])
+    (lambda () (f 0))))
 
+
+     
   
 
 
