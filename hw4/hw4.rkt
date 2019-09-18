@@ -6,9 +6,9 @@
 ;; put your code below
 
 (define (sequence low high stride)
-    (if(<= low high)
-       (cons low (sequence (+ low stride) high stride))
-       null))
+  (if(<= low high)
+     (cons low (sequence (+ low stride) high stride))
+     null))
 
 (define (string-append-map xs suffix)
   (map (lambda (x)
@@ -55,15 +55,38 @@
 
 (define (cycle-lists xs ys)
   (letrec ([f (lambda (n) (cons (cons (list-nth-mod xs n) (list-nth-mod ys n) )
-                                      (lambda () (f (+ n 1)))))])
+                                (lambda () (f (+ n 1)))))])
     (lambda () (f 0))))
 
+(define (vector-assoc v vec)
+  (letrec ([helper (lambda (n) (cond [(= n (vector-length vec)) #f]
+                                     [(and (pair? (vector-ref vec n)) (equal? v (car (vector-ref vec n)))  (vector-ref vec n) )]
+                                     [#t (helper (+ n 1))]))])
+    (helper 0)))
 
-     
+
+
+(define (cached-assoc xs n)
+  (letrec( [memo (make-vector n (cons #f #f))]
+           [nth 0]
+           [f (lambda (v)
+                (let ([ans (assoc v (vector->list memo))])
+                  (if ans
+                      ans
+                      (let ([new-ans (assoc v xs)])
+                        (if new-ans
+                            (begin
+                              ;(println memo)
+                              (vector-set! memo (remainder nth n) new-ans)
+                              (set! nth (+ nth 1))
+                              ;(println "cache miss")
+                              ;(println  ans)
+                              ;(println new-ans)
+                              ;(println memo)
+                              ;(println nth)
+                              new-ans)
+                            new-ans)))))])
+    f))
+
+
   
-
-
-
-  
-
-
