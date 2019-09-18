@@ -67,7 +67,7 @@
 
 
 (define (cached-assoc xs n)
-  (letrec( [memo (make-vector n #f)]
+  (let*( [memo (make-vector n #f)]
            [nth 0]
            [f (lambda (v)
                 (let ([ans (vector-assoc v  memo) ])
