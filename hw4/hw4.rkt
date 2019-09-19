@@ -89,4 +89,14 @@
     f))
 
 
-  
+(define-syntax while-less
+  (syntax-rules (do)
+    [(while-less e1 do e2)
+     (let ([cur e1])
+       (letrec ([f (lambda ()
+                     (let ([ret e2])
+                     (if (>= ret cur)
+                         #t
+                         (begin (f)))))])
+         (f)))]))
+    
