@@ -86,71 +86,75 @@
                       [clo-env (closure-env v1)]
                       [fun-name (fun-nameopt fun)]
                       [fun-arg (fun-formal fun)])
-                      (eval-under-env body
-                                      (if fun-name
-                                          (cons (cons fun-arg v2)(cons (cons fun-name v1) clo-env))
-                                          (cons (cons fun-arg v2) clo-env))))
+                 (eval-under-env body
+                                 (if fun-name
+                                     (cons (cons fun-arg v2)(cons (cons fun-name v1) clo-env))
+                                     (cons (cons fun-arg v2) clo-env))))
                (error "MUPL call's first subexpression is not a valid closure")))]
                
                
            
-                      [(apair? e)
-                       (let ([v1 (eval-under-env (apair-e1 e) env)]
-                             [v2 (eval-under-env (apair-e2 e) env)])
-                         (apair v1 v2))]
-                      [(fst? e)
-                       (let ([v (eval-under-env (fst-e e) env)])
-                         (if (apair? v)
-                             (apair-e1 v)
-                             (error "MUPL fst applied to non-pair element")))]
-                      [(snd? e)
-                       (let ([v (eval-under-env (snd-e e) env)])
-                         (if (apair? v)
-                             (apair-e2 v)
-                             (error "MUPL snd applied to non-pair element")))]
-                      [(isaunit? e)
-                       (let ([v (eval-under-env (isaunit-e e) env)])
-                         (if (aunit? v)
-                             (int 1)
-                             (int 0)))]
+        [(apair? e)
+         (let ([v1 (eval-under-env (apair-e1 e) env)]
+               [v2 (eval-under-env (apair-e2 e) env)])
+           (apair v1 v2))]
+        [(fst? e)
+         (let ([v (eval-under-env (fst-e e) env)])
+           (if (apair? v)
+               (apair-e1 v)
+               (error "MUPL fst applied to non-pair element")))]
+        [(snd? e)
+         (let ([v (eval-under-env (snd-e e) env)])
+           (if (apair? v)
+               (apair-e2 v)
+               (error "MUPL snd applied to non-pair element")))]
+        [(isaunit? e)
+         (let ([v (eval-under-env (isaunit-e e) env)])
+           (if (aunit? v)
+               (int 1)
+               (int 0)))]
                              
-                      ;; CHANGE add more cases here
-                      [#t (error (format "bad MUPL expression: ~v" e))]))
+        ;; CHANGE add more cases here
+        [#t (error (format "bad MUPL expression: ~v" e))]))
 
-               ;; Do NOT change
-               (define (eval-exp e)
-                 (eval-under-env e null))
+;; Do NOT change
+(define (eval-exp e)
+  (eval-under-env e null))
         
-               ;; Problem 3
+;; Problem 3
 
-               (define (ifaunit e1 e2 e3) "CHANGE")
+(define (ifaunit e1 e2 e3)  (ifgreater (isaunit e1) (int 0) e2 e3 ))
 
-               (define (mlet* lstlst e2) "CHANGE")
+(define (mlet* lstlst e2)
+  (if (null? lstlst)
+      e2
+      (mlet (car (car lstlst)) (cdr (car lstlst)) (mlet* (cdr lstlst) e2))))
+      
+; if (e1 > e2 ) then e4
+; else if (e2 > e1) then e4
+(define (ifeq e1 e2 e3 e4) (ifgreater e1 e2 e4 (ifgreater e2 e1 e4 e3)))  
 
-               (define (ifeq e1 e2 e3 e4) "CHANGE")
+;; Problem 4
 
-               ;; Problem 4
+(define mupl-map "CHANGE")
 
-               (define mupl-map "CHANGE")
+(define mupl-mapAddN 
+  (mlet "map" mupl-map
+        "CHANGE (notice map is now in MUPL scope)"))
 
-               (define mupl-mapAddN 
-                 (mlet "map" mupl-map
-                       "CHANGE (notice map is now in MUPL scope)"))
+;; Challenge Problem
 
-               ;; Challenge Problem
+(struct fun-challenge (nameopt formal body freevars) #:transparent) ;; a recursive(?) 1-argument function
 
-               (struct fun-challenge (nameopt formal body freevars) #:transparent) ;; a recursive(?) 1-argument function
+;; We will test this function directly, so it must do
+;; as described in the assignment
+(define (compute-free-vars e) "CHANGE")
 
-               ;; We will test this function directly, so it must do
-               ;; as described in the assignment
-               (define (compute-free-vars e) "CHANGE")
+;; Do NOT share code with eval-under-env because that will make
+;; auto-grading and peer assessment more difficult, so
+;; copy most of your interpreter here and make minor changes
+(define (eval-under-env-c e env) "CHANGE")
 
-               ;; Do NOT share code with eval-under-env because that will make
-               ;; auto-grading and peer assessment more difficult, so
-               ;; copy most of your interpreter here and make minor changes
-               (define (eval-under-env-c e env) "CHANGE")
-
-               ;; Do NOT change this
-               (define (eval-exp-c e)
-                 (eval-under-env-c (compute-free-vars e) null))
-               
+;; Do NOT change this
+(define (eval-exp-c e)
+  (eval-under-env-c (compute-free-vars e) null))
