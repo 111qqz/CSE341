@@ -53,6 +53,7 @@
          (envlookup env (var-string e))]
         [(int? e) e]
         [(closure? e) e]
+        [(aunit? e) e]
         [(add? e) 
          (let ([v1 (eval-under-env (add-e1 e) env)]
                [v2 (eval-under-env (add-e2 e) env)])
