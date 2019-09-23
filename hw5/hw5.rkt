@@ -132,15 +132,23 @@
       
 ; if (e1 > e2 ) then e4
 ; else if (e2 > e1) then e4
-(define (ifeq e1 e2 e3 e4) (mlet "_x" e1 (mlet "_y" e2 ifgreater "var _x" "var _y" e4 (ifgreater "var _y" "var _x" e4 e3))))  
+(define (ifeq e1 e2 e3 e4) (mlet "_x" e1 (mlet "_y" e2 (ifgreater (var "_x") (var "_y") e4 (ifgreater (var "_y") (var "_x") e4 e3)))))
 
 ;; Problem 4
 
-(define mupl-map "CHANGE")
+(define mupl-map
+  (fun #f "mupl_fun"
+    (fun (var "fun") "mupl_lst"
+           (ifaunit (var "mupl_lst")
+               (aunit)
+               (apair (call (var "mupl_fun") (fst (var "mupl_lst"))) ( (snd (var "mupl_lst"))) )))) )
+               
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
-        "CHANGE (notice map is now in MUPL scope)"))
+        (fun #f "mupl_int"
+             (fun #f "mupl_lst"
+                  (call (call (var "map") (fun #f "x" (add (var "x") (var "mupl_int") ) ) ) (var "mupl_lst"))))))
 
 ;; Challenge Problem
 
