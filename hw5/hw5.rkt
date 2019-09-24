@@ -138,10 +138,10 @@
 
 (define mupl-map
   (fun #f "mupl_fun"
-    (fun (var "fun") "mupl_lst"
+    (fun "Fun" "mupl_lst"
            (ifaunit (var "mupl_lst")
                (aunit)
-               (apair (call (var "mupl_fun") (fst (var "mupl_lst"))) ( (snd (var "mupl_lst"))) )))) )
+               (apair (call (var "mupl_fun") (fst (var "mupl_lst")))  (call (var "Fun") (snd (var "mupl_lst"))) )))) )
                
 
 (define mupl-mapAddN 
