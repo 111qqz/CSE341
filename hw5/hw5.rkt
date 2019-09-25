@@ -26,14 +26,12 @@
 
 (define (racketlist->mupllist rktlist)
   (cond [(null? rktlist) (aunit)]
-        [(null? (cdr rktlist)) (apair (car rktlist) (aunit))]
         [#t (apair (car rktlist) (racketlist->mupllist (cdr rktlist)))]))
         
 ;; Problem 2
 
 (define (mupllist->racketlist mupllist)
   (cond [(aunit? mupllist) null]
-        [(aunit? (apair-e2 mupllist)) (cons (apair-e1 mupllist) null)]
         [#t (cons (apair-e1 mupllist) (mupllist->racketlist (apair-e2 mupllist)))]))
 
 ;; lookup a variable in an environment
