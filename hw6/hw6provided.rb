@@ -13,7 +13,7 @@ class Piece
     @all_rotations = point_array
     @rotation_index = (0..(@all_rotations.size-1)).to_a.sample
     @color = All_Colors.sample
-    @base_position = [5, 0] # [column, row]
+    @base_position = [5, 0] # board[column, row]
     @board = board
     @moved = true
   end
@@ -68,10 +68,11 @@ class Piece
     rotate1 = point_array.map {|x,y| [-y,x]}  
     rotate2 = point_array.map {|x,y| [-x,-y]} 
     rotate3 = point_array.map {|x,y| [y,-x]}  
-    [point_array, rotate1, rotate2, rotate3]  
+    [point_array, rotate1, rotate2, rotate3]
   end
 
   # class method to choose the next piece
+  # sample method used to choose a random element.
   def self.next_piece (board)
     Piece.new(All_Pieces.sample, board)
   end
@@ -136,6 +137,7 @@ class Board
   # current piece and replaces it with a new one.
   def run
     ran = @current_block.drop_by_one
+    # ran return a bool value,true if can move.
     if !ran
       store_current
       if !game_over?
@@ -287,6 +289,7 @@ class Tetris
   end
 
   def key_bindings  
+    print("key bindings init in Tetris\n")
     @root.bind('n', proc {self.new_game}) 
 
     @root.bind('p', proc {self.pause}) 
