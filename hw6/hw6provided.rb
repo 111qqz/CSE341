@@ -11,7 +11,10 @@ class Piece
   # color, rotation, and starting position.
   def initialize (point_array, board)
     @all_rotations = point_array
+    # all_rotations.size = 7 , which is all kinds of shape
     @rotation_index = (0..(@all_rotations.size-1)).to_a.sample
+    # print("all_rotations size:\n",@all_rotations.size)
+    # print("rotation_index:\n",@rotation_index)
     @color = All_Colors.sample
     @base_position = [5, 0] # board[column, row]
     @board = board
@@ -192,6 +195,7 @@ class Board
         ran = @current_block.drop_by_one
       end
       draw
+      # print("current_pos:",@current_pos)
       store_current
       if !game_over?
         next_piece
@@ -203,6 +207,7 @@ class Board
 
   # gets the next piece
   def next_piece
+    # print("next_piece in  Board\n")
     @current_block = Piece.next_piece(self)
     @current_pos = nil
   end
@@ -212,6 +217,7 @@ class Board
   def store_current
     locations = @current_block.current_rotation
     displacement = @current_block.position
+    # print("locations size= ",locations.size)
     (0..3).each{|index| 
       current = locations[index];
       @grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
@@ -289,7 +295,7 @@ class Tetris
   end
 
   def key_bindings  
-    print("key bindings init in Tetris\n")
+    # print("key bindings init in Tetris\n")
     @root.bind('n', proc {self.new_game}) 
 
     @root.bind('p', proc {self.pause}) 

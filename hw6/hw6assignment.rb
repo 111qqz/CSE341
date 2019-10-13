@@ -22,18 +22,19 @@ class MyPiece < Piece
                rotations([[0, 0], [-1, 0], [0, -1], [1, -1]]), # S
                rotations([[0, 0], [1, 0], [0, -1], [-1, -1]]), # z
                [[[0, 0], [-1, 0], [1, 0], [2, 0], [-2, 0]], # 5-length long (only needs two)
-               [[0, 0], [0, -1], [0, 1], [0, 2], [0, -2]]]] #
-
-
-
+               [[0, 0], [0, -1], [0, 1], [0, 2], [0, -2]]],
+               rotations([[0, 0], [-1, 0], [1, 0], [1, 1], [0, 1]]),
+               rotations([[0, 0], [0, -1], [1, 0]])] #
 end
+
 
 class MyBoard < Board
   # your enhancements here
-  # def initialize
-  #   super    
-  #   @current_block = MyPiece.next_piece(self)
-  # end
+  def initialize(game)
+    super    
+    @current_block = MyPiece.next_piece(self)
+    @cheat = false 
+  end
 
   # rotates the current piece 180 degree
   def rotate
@@ -45,8 +46,37 @@ class MyBoard < Board
 
     # gets the next piece
   def next_piece
+    # print("next_piece in  MyBoard\n")
+    # print(@cheat)
+    if @cheat 
+      cheat_piece = [[[0, 0]]]
+      @current_block = MyPiece.new(cheat_piece, self)
+      @cheat = false 
+    else
       @current_block = MyPiece.next_piece(self)
-      @current_pos = nil
+
+    end 
+    @current_pos = nil
+  end
+
+  def cheat
+    if !@cheat and @score >= 100
+      @score = @score - 100
+      @cheat = true
+    end
+  end
+
+  def store_current
+    locations = @current_block.current_rotation
+    displacement = @current_block.position
+    # print("locations size= ",locations.size)
+    (0..locations.size-1).each{|index| 
+      current = locations[index];
+      @grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
+      @current_pos[index]
+    }
+    remove_filled
+    @delay = [@delay - 2, 80].max
   end
  
 
@@ -65,8 +95,9 @@ class MyTetris < Tetris
 
   def key_bindings 
     super
-    print("key bindings init in MyTetris\n") 
-    @root.bind('u' , proc {@board.rotate}) 
+    # print("key bindings init in MyTetris\n") 
+    @root.bind('u' , proc {@board.rotate})
+    @root.bind('c' , proc {@board.cheat})
   end
 
   def set_board
@@ -76,6 +107,5 @@ class MyTetris < Tetris
                   @board.block_size * @board.num_columns + 6, 24, 80)
     @board.draw
   end
-
 end
 
