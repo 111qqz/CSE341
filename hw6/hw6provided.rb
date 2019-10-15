@@ -11,9 +11,12 @@ class Piece
   # color, rotation, and starting position.
   def initialize (point_array, board)
     @all_rotations = point_array
+    # all_rotations.size = 7 , which is all kinds of shape
     @rotation_index = (0..(@all_rotations.size-1)).to_a.sample
+    # print("all_rotations size:\n",@all_rotations.size)
+    # print("rotation_index:\n",@rotation_index)
     @color = All_Colors.sample
-    @base_position = [5, 0] # [column, row]
+    @base_position = [5, 0] # board[column, row]
     @board = board
     @moved = true
   end
@@ -68,10 +71,11 @@ class Piece
     rotate1 = point_array.map {|x,y| [-y,x]}  
     rotate2 = point_array.map {|x,y| [-x,-y]} 
     rotate3 = point_array.map {|x,y| [y,-x]}  
-    [point_array, rotate1, rotate2, rotate3]  
+    [point_array, rotate1, rotate2, rotate3]
   end
 
   # class method to choose the next piece
+  # sample method used to choose a random element.
   def self.next_piece (board)
     Piece.new(All_Pieces.sample, board)
   end
@@ -136,6 +140,7 @@ class Board
   # current piece and replaces it with a new one.
   def run
     ran = @current_block.drop_by_one
+    # ran return a bool value,true if can move.
     if !ran
       store_current
       if !game_over?
@@ -190,6 +195,7 @@ class Board
         ran = @current_block.drop_by_one
       end
       draw
+      # print("current_pos:",@current_pos)
       store_current
       if !game_over?
         next_piece
@@ -201,6 +207,7 @@ class Board
 
   # gets the next piece
   def next_piece
+    # print("next_piece in  Board\n")
     @current_block = Piece.next_piece(self)
     @current_pos = nil
   end
@@ -210,6 +217,7 @@ class Board
   def store_current
     locations = @current_block.current_rotation
     displacement = @current_block.position
+    # print("locations size= ",locations.size)
     (0..3).each{|index| 
       current = locations[index];
       @grid[current[1]+displacement[1]][current[0]+displacement[0]] = 
@@ -287,6 +295,7 @@ class Tetris
   end
 
   def key_bindings  
+    # print("key bindings init in Tetris\n")
     @root.bind('n', proc {self.new_game}) 
 
     @root.bind('p', proc {self.pause}) 
