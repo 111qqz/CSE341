@@ -118,7 +118,11 @@ class GeometryExpression
       @x = x
       @y = y
     end
+    def preprocess_prog
+      self # no pre-processing to do here
+    end
   end
+ 
   
   class Line < GeometryValue
     # *add* methods to this class -- do *not* change given code and do not
@@ -128,6 +132,9 @@ class GeometryExpression
       @m = m
       @b = b
     end
+    def preprocess_prog
+      self # no pre-processing to do here
+    end
   end
   
   class VerticalLine < GeometryValue
@@ -136,6 +143,9 @@ class GeometryExpression
     attr_reader :x
     def initialize x
       @x = x
+    end
+    def preprocess_prog
+      self # no pre-processing to do here
     end
   end
   
@@ -151,6 +161,16 @@ class GeometryExpression
       @y1 = y1
       @x2 = x2
       @y2 = y2
+    end
+    def preprocess_prog
+      if real_close_point(x1,y1,x2,y2)
+        Point.new(x1,y1)
+      elsif !(real_close(x1,x2)) and  x1 > x2
+        LineSegment.new(x2,y2,x1,y1)
+      elsif real_close(x1,)
+      
+      
+
     end
   end
   

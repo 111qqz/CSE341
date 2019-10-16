@@ -210,9 +210,9 @@ fun preprocess_prog (e) =
 	case e of
     LineSegment (x1,y1,x2,y2)  => if real_close_point (x1,y1) (x2,y2)
 	  				then Point (x1,y1)
-					else if not(real_close(x1,y1)) andalso x1 > x2
+					else if not(real_close(x1,x2)) andalso x1 > x2
 					then LineSegment (x2,y2,x1,y1)
-					else if real_close(x1,y1) andalso y1 > y2
+					else if real_close(x1,x2) andalso y1 > y2
 					then LineSegment (x2,y2,x1,y1)
 					else e
 	|  Intersect (e1,e2) => Intersect(preprocess_prog(e1), preprocess_prog(e2))
