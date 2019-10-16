@@ -121,6 +121,11 @@ class GeometryExpression
     def preprocess_prog
       self # no pre-processing to do here
     end
+    private
+    def inbetween(v,end1,end2)
+      eps = GeometryExpression::Epsilon
+      (end1 - eps <= v and v <= end2 + eps) or (end2 - eps <= v and v <= end1 + eps )
+
   end
  
   
@@ -167,10 +172,10 @@ class GeometryExpression
         Point.new(x1,y1)
       elsif !(real_close(x1,x2)) and  x1 > x2
         LineSegment.new(x2,y2,x1,y1)
-      elsif real_close(x1,)
-      
-      
-
+      elsif real_close(x1,x2) and y1 > y2
+        LineSegment.New(x2,y2,x1,y1)
+      else 
+        self 
     end
   end
   
@@ -183,6 +188,9 @@ class GeometryExpression
       @e1 = e1
       @e2 = e2
     end
+    def preprocess_prog
+      Intersect.new(@e1.preprocess_prog,@e2.preprocess_prog)
+    end
   end
   
   class Let < GeometryExpression
@@ -194,6 +202,9 @@ class GeometryExpression
       @e1 = e1
       @e2 = e2
     end
+    def preprocess_prog
+      Let.new(@s,@e1.preprocess_prog,@e2.preprocess_prog)
+    end
   end
   
   class Var < GeometryExpression
@@ -202,6 +213,10 @@ class GeometryExpression
     def initialize s
       @s = s
     end
+    def preprocess_prog
+      self # no pre-processing to do here
+    end
+
     def eval_prog env # remember: do not change this method
       pr = env.assoc @s
       raise "undefined variable" if pr.nil?
@@ -216,5 +231,9 @@ class GeometryExpression
       @dx = dx
       @dy = dy
       @e = e
+    end
+
+    def preprocess_prog
+      Shift.new(dx,dy,@e.preprocess_prog)
     end
   end
