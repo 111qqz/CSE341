@@ -121,10 +121,17 @@ class GeometryExpression
     def preprocess_prog
       self # no pre-processing to do here
     end
+    def eval_prog env 
+      self # all values evaluate to self
+    end
+    def shift(dx,dy)
+      Point.new(x + dx, y + dy)
+    end
     private
     def inbetween(v,end1,end2)
       eps = GeometryExpression::Epsilon
       (end1 - eps <= v and v <= end2 + eps) or (end2 - eps <= v and v <= end1 + eps )
+    end
 
   end
  
@@ -137,8 +144,14 @@ class GeometryExpression
       @m = m
       @b = b
     end
+    def eval_prog env 
+      self # all values evaluate to self
+    end
     def preprocess_prog
       self # no pre-processing to do here
+    end
+    def shift(dx,dy)
+      Line.new(m, b + dy - m * dx)
     end
   end
   
@@ -149,8 +162,14 @@ class GeometryExpression
     def initialize x
       @x = x
     end
+    def eval_prog env 
+      self # all values evaluate to self
+    end
     def preprocess_prog
       self # no pre-processing to do here
+    end
+    def shift(dx,dy)
+      VerticalLine.new(x + dx)
     end
   end
   
@@ -167,15 +186,25 @@ class GeometryExpression
       @x2 = x2
       @y2 = y2
     end
+    def eval_prog env 
+      self # all values evaluate to self
+    end
     def preprocess_prog
+      # puts(x1,y1,x2,y2)
+      # puts(real_close_point(x1,y1,x2,y2))
       if real_close_point(x1,y1,x2,y2)
         Point.new(x1,y1)
+        # puts("miao miao miao")
       elsif !(real_close(x1,x2)) and  x1 > x2
         LineSegment.new(x2,y2,x1,y1)
       elsif real_close(x1,x2) and y1 > y2
         LineSegment.New(x2,y2,x1,y1)
       else 
-        self 
+        self
+      end
+    end
+    def shift(dx,dy)
+      LineSegment.new(x1 + dx, y1 + dy, x2 + dx, y2 + dy)
     end
   end
   
@@ -204,6 +233,9 @@ class GeometryExpression
     end
     def preprocess_prog
       Let.new(@s,@e1.preprocess_prog,@e2.preprocess_prog)
+    end
+    def eval_prog env 
+      @e2.eval_prog( env.push( [@s,@e1.eval_prog(env)] ) )
     end
   end
   
@@ -235,5 +267,8 @@ class GeometryExpression
 
     def preprocess_prog
       Shift.new(dx,dy,@e.preprocess_prog)
+    end
+    def eval_prog env
+      @e.eval_prog(env).shift(@dx,@dy)
     end
   end
