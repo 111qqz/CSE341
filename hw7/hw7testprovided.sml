@@ -59,3 +59,7 @@ in
 	then (print "eval_prog with shadowing 'a' in environment is working properly\n")
 	else (print "eval_prog with shadowing 'a' in environment is not working properly\n")
 end;
+
+
+val x = preprocess_prog(LineSegment(~3.7,1.5,~3.7,1.5))
+(* val ok = real_close_point (1.00000999,1.0) (1.0,2.0) *)
