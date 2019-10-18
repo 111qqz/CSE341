@@ -176,4 +176,7 @@ if not (s1.x1 == TWO and s1.y1 == THREE and s1.x2 == SIX and s1.y2 == 9)
 	puts "Shift should shift e by dx and dy"
 end
 
+kk = Let.new("y",Let.new("x",NoPoints.new,NoPoints.new),Var.new("x"))
+puts(kk.eval_prog [])
+
 

@@ -375,9 +375,15 @@ class GeometryExpression
     end
     def eval_prog env 
       # use unshift for shadow situtation
-      @e2.eval_prog( env.unshift( [@s,@e1.eval_prog(env)] ) )
+      # puts(env)
+      @e2.eval_prog( [[@s,@e1.eval_prog(env)]] + env  )
     end
   end
+
+  # @s = y 
+  # @e1 = Let.new("x",NoPoints.new,NoPoints.new) 
+  # @e2 Var.new("x")
+
   
   class Var < GeometryExpression
     # *add* methods to this class -- do *not* change given code and do not
